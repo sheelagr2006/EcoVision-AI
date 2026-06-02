@@ -1,39 +1,49 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 
-const navItems = [
-  { to: '/dashboard', icon: '🏠', label: 'Dashboard' },
-  { to: '/report', icon: '📋', label: 'Report Issue' },
-  { to: '/admin', icon: '⚙️', label: 'Admin Panel' },
+const nav = [
+  { to: '/dashboard', icon: '🏠', label: 'Dashboard'   },
+  { to: '/report',    icon: '📋', label: 'Report Issue' },
+  { to: '/admin',     icon: '⚙️', label: 'Admin Panel'  },
 ]
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-green-100 flex flex-col py-6 px-4">
-      <div className="mb-8 px-2">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Navigation</p>
+    <aside className="hidden md:flex w-64 lg:w-72 shrink-0 flex-col bg-white border-r border-gray-100 min-h-screen">
+
+      {/* Brand */}
+      <div className="h-16 flex items-center px-6 border-b border-gray-100 shrink-0">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white text-base shadow-md shadow-green-600/25">🌿</div>
+          <span className="font-extrabold text-gray-900 tracking-tight">EcoVision <span className="text-green-600">AI</span></span>
+        </Link>
       </div>
 
-      <nav className="flex flex-col gap-1">
-        {navItems.map(({ to, icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
+      {/* Nav links */}
+      <nav className="flex-1 p-4 space-y-1">
+        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] px-3 py-2 mb-1">Navigation</p>
+        {nav.map(({ to, icon, label }) => (
+          <NavLink key={to} to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center gap-3.5 px-4 py-3 rounded-xl font-semibold transition-all ${
                 isActive
-                  ? 'bg-green-50 text-green-700'
-                  : 'text-gray-600 hover:bg-green-50 hover:text-green-700'
+                  ? 'bg-green-600 text-white shadow-md shadow-green-600/20'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`
             }
           >
-            <span>{icon}</span>
-            <span>{label}</span>
+            <span className="text-lg leading-none">{icon}</span>
+            {label}
           </NavLink>
         ))}
       </nav>
 
-      <div className="mt-auto px-3 py-3 rounded-lg bg-green-50 text-center">
-        <p className="text-xs text-green-700 font-medium">🌱 Building a greener future</p>
+      {/* Bottom card */}
+      <div className="p-4 shrink-0">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100 rounded-2xl p-5 text-center">
+          <span className="text-3xl block mb-2">🌱</span>
+          <p className="text-sm font-bold text-green-800">Building a greener future</p>
+          <p className="text-xs text-green-600 mt-1">one report at a time</p>
+        </div>
       </div>
     </aside>
   )
