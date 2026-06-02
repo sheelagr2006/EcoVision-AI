@@ -11,6 +11,8 @@ function authHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+const filters = ['All', 'Pending', 'In Review', 'Resolved']
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
   const [reports, setReports] = useState([])
@@ -62,40 +64,49 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: 'overview', label: '📊 Overview' },
-    { id: 'reports', label: '📋 Reports' },
-    { id: 'users', label: '👥 Users' },
+    { id: 'reports',  label: '📋 Reports'  },
+    { id: 'users',    label: '👥 Users'    },
   ]
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 p-6 overflow-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">⚙️</span>
-              <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
-            </div>
-            <p className="text-gray-500 text-sm">Manage users, reports, and platform activity.</p>
-          </div>
+      <div className="flex-1 flex flex-col min-w-0">
 
+        {/* Header */}
+        <div className="bg-white border-b border-gray-100 px-8 lg:px-10 h-16 flex items-center gap-3 shrink-0">
+          <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-md">⚙️</div>
+          <div>
+            <h1 className="text-xl font-extrabold text-gray-900">Admin Dashboard</h1>
+            <p className="text-xs text-gray-400">Manage users, reports and platform activity</p>
+          </div>
+        </div>
+
+        {/* Body */}
+        <main className="flex-1 p-8 lg:p-10 overflow-auto">
+
+          {/* Error banner */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm flex items-center gap-2">
               <span>⚠️</span> {error}
               <button onClick={fetchAll} className="ml-auto underline text-red-500 text-xs">Retry</button>
             </div>
           )}
 
-          <AdminStats stats={stats} loading={loading} />
+          {/* Stats */}
+          <div className="mb-8">
+            <AdminStats stats={stats} loading={loading} />
+          </div>
 
+          {/* Tabs */}
           <div className="flex gap-1 mb-6 border-b border-gray-200">
             {tabs.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                className={`px-5 py-2.5 text-sm font-semibold transition-colors border-b-2 -mb-px ${
                   activeTab === t.id
-                    ? 'border-green-500 text-green-700'
+                    ? 'border-green-600 text-green-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -104,19 +115,45 @@ export default function AdminDashboard() {
             ))}
           </div>
 
+          {/* Tab panels */}
           {activeTab === 'overview' && (
-            <AnalyticsCharts stats={stats} reports={reports} />
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <AnalyticsCharts stats={stats} reports={reports} />
+            </div>
           )}
 
           {activeTab === 'reports' && (
-            <ReportsTable reports={reports} onStatusChange={handleStatusChange} loading={loading} />
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-bold text-gray-900">All Reports</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">Review and manage citizen submissions</p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {filters.map((f, i) => (
+                    <button key={f}
+                      className={`text-sm font-bold px-4 py-1.5 rounded-full border transition-colors ${
+                        i === 0
+                          ? 'bg-green-600 text-white border-green-600'
+                          : 'text-gray-500 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      }`}>
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <ReportsTable reports={reports} onStatusChange={handleStatusChange} loading={loading} />
+            </div>
           )}
 
           {activeTab === 'users' && (
-            <UserTable users={users} loading={loading} />
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <UserTable users={users} loading={loading} />
+            </div>
           )}
-        </div>
-      </main>
+
+        </main>
+      </div>
     </div>
   )
 }
